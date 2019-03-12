@@ -1,0 +1,76 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">优惠券管理</li>
+            <li class=""><a href="{:url('admin/coupon/add')}">添加优惠券</a></li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+
+                <form class="layui-form layui-form-pane" action="{:url('admin/coupon/index')}" method="get">
+                   
+                    <div class="layui-inline">
+                        <label class="layui-form-label">名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="keyword" value="" placeholder="请输入关键词" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn">搜索</button>
+                    </div>
+                </form>
+                <hr>
+                
+                <form action="" method="post" class="ajax-form">
+                    <button type="button" class="layui-btn layui-btn-small ajax-action" data-action="{:url('admin/coupon/toggle',['type'=>'audit'])}">审核</button>
+                    <button type="button" class="layui-btn layui-btn-warm layui-btn-small ajax-action" data-action="{:url('admin/coupon/toggle',['type'=>'cancel_audit'])}">取消审核</button>
+                    <button type="button" class="layui-btn layui-btn-danger layui-btn-small ajax-action" data-action="{:url('admin/coupon/delete')}">删除</button>
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 15px;"><input type="checkbox" class="check-all"></th>
+                            <th style="width: 30px;">ID</th>
+                            <th>标题</th>
+                            <th>优惠券金额</th>
+                            <th>需要满足多少消费</th>
+                            <th>开始使用时间</th>
+                            <th>过期时间</th>
+                            <th>库存</th>
+                            <th>创建时间</th>
+                            <th>是否上线</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                      <!--  数据展示 -->
+                      {foreach name="coupon" item="v"}
+                        <tr>
+                            <td><input type="checkbox" name="ids[]" value="{$vo.id}"></td>
+                            <td>{$v.id}</td>
+                            <td>{$v.title}</td>
+                            <td>{$v.price/100}</td>
+                            <td>{$v.man_price/100}</td>
+                            <td>{$v.bg_data|date="Y-m-d H:i",###}</td>
+                            <td>{$v.end_data|date="Y-m-d H:i",###}</td>
+                            <td>{$v.num}</td>
+                            <td>{$v.add_time|date="Y-m-d H:i",###}</td>
+                            <td>{if condition="$v.is_online==1"}上架{else/}下架{/if}</td> 
+                            <td>
+                                <a href="{:url('admin/coupon/edit',['id'=>$v.id])}" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
+                                <a href="{:url('admin/coupon/delete',['id'=>$v.id])}" class="layui-btn layui-btn-danger layui-btn-mini ajax-delete">删除</a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        <!--  数据展示 -->
+                        </tbody>
+                    </table>
+                    <!--分页-->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

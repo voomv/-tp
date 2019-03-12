@@ -1,0 +1,81 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">配送员管理</li>
+            <li class=""><a href="{:url('admin/peisong_member/add')}">添加配送员</a></li>
+            <li class=""><a href="{:url('admin/add_order/position')}">配送员位置</a></li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+
+                <form class="layui-form layui-form-pane" action="{:url('admin/peisong_member/index')}" method="get">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="mobile" value="{$mobile}" placeholder="请输入关键词" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" value="{$name}" placeholder="请输入关键词" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn">搜索</button>
+                    </div>
+                </form>
+                <hr>
+                
+                <form action="" method="post" class="ajax-form">
+                    <button type="button" class="layui-btn layui-btn-small ajax-action" data-action="{:url('admin/peisong_member/toggle',['type'=>'audit'])}">审核</button>
+                    <button type="button" class="layui-btn layui-btn-warm layui-btn-small ajax-action" data-action="{:url('admin/peisong_member/toggle',['type'=>'cancel_audit'])}">取消审核</button>
+                    <button type="button" class="layui-btn layui-btn-danger layui-btn-small ajax-action" data-action="{:url('admin/peisong_member/delete')}">删除</button>
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 15px;"><input type="checkbox" class="check-all"></th>
+                            <th style="width: 30px;">ID</th>
+                            <th>姓名</th>
+                            <th>身份证正面照</th>
+                            <th>身份证国徽照</th>
+                            <th>手机号 </th>
+                            <th>身份证</th>
+                            <th>审核状态</th>
+                            <th>居住地</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach name="list" item="vo"}
+                        <tr>
+                            <td><input type="checkbox" name="ids[]" value="{$vo.id}"></td>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.name}</td>
+                            <td><img src="{$vo.card_positive}" width="100px"></td>
+                            <td><img src="{$vo.card_back}" width="100px"></td>
+                            <td>{$vo.mobile}</td>
+                            <td>{$vo.card}</td>
+                            <td>{php}echo $vo['review']==1 ? '审核通过' : '等待审核';{/php}</td>
+                            <td>{$vo.place}</td>
+                            <td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
+                            <td>
+                                <a href="{:url('admin/peisong_member/edit',['id'=>$vo['id']])}" class="layui-btn layui-btn-normal layui-btn-mini">编辑</a>
+                                <a href="{:url('admin/peisong_member/delete',['id'=>$vo['id']])}" class="layui-btn layui-btn-danger layui-btn-mini ajax-delete">删除</a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    <!--分页-->
+                    {$list->render()}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

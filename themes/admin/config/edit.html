@@ -1,0 +1,82 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+             <li class=""><a href="{:url('admin/config/index')}">自定义变量</a></li>
+            <li class="layui-this"><a href="{:url('admin/config/edit?id='.$config['id'].'')}">修改变量</a></li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/config/update')}" method="post">
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">变量说明</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="{$config.name}" required  lay-verify="required" placeholder="变量说明" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">变量名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="k" value="{$config.k}" required  lay-verify="required" placeholder="变量名称,注意需符合PHP变量名条件" class="layui-input">
+                        </div>
+                    </div>
+<!--                    <div class="layui-form-item">
+                        <label class="layui-form-label">变量值</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="v" value="{$config.v}" placeholder="变量值" required  lay-verify="required" class="layui-input">
+                        </div>
+                    </div>-->
+                    <div class="layui-form-item textOrImg">
+                        <label class="layui-form-label">变量值</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="file" value="{$config.v}" placeholder="变量值" class="layui-input" name="v">
+                            <input type="file" name="file" lay-type="file" class="layui-upload-file" />
+                            <span style='color:red;'>注:变量值为文件是选择上传文件</span>
+                        </div>
+                    </div>
+                    
+                    <input type='hidden' name='id' value="{$config.id}">
+                   
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">修改</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    layui.use('upload', function(){
+      layui.upload({
+        url: "{:url('api/upload/uploadFile')}" //上传接口
+        ,success: function(res){ //上传成功后的回调
+            if(res.error){
+                layer.msg(res.message,{icon:2});
+            }else {
+                console.log(res);
+                $("#file").val(res.url);
+                layer.msg('上传成功',{icon:1});
+            }
+        }
+      });
+
+      layui.upload({
+        url: "{:url('api/upload/uploadFile')}"
+        ,elem: '#file1' //指定原始元素，默认直接查找class="layui-upload-file"
+        ,method: 'get' //上传接口的http类型
+        ,success: function(res){
+
+          LAY_demo_upload.src = res.url;
+        }
+      });
+    });
+</script>
+{/block}

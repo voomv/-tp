@@ -1,0 +1,238 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">订单管理</li>
+            <li class=""><a href="{:url('admin/add_order/add')}">添加订单</a></li>
+            <li class=""><a href="{:url('admin/add_order/setting')}">设置配送金额</a></li>
+        </ul>
+        <div class="layui-tab-content">
+
+            <form class="layui-form layui-form-pane" action="{:url('admin/order/index')}" method="get">
+                <div class="layui-inline">
+                    <label class="layui-form-label">订单状态</label>
+                    <div class="layui-input-inline">
+                        <select name="status">
+                            <option value="0">请选择状态</option>
+                            <!--<option value="1" {if condition="$status == 1"}selected ="selected"{/if}>等待支付</option>-->
+                            <option value="2" {if condition="$status == 2"}selected ="selected"{/if}>等待发货</option>
+                            <option value="3" {if condition="$status == 3"}selected ="selected"{/if}>已发货,等待接单</option> 
+                            <option value="4" {if condition="$status == 4"}selected ="selected"{/if}>取货中</option> 
+                            <option value="5" {if condition="$status == 5"}selected ="selected"{/if}>配送中</option> 
+                            <option value="6" {if condition="$status == 6"}selected ="selected"{/if}>已收货</option> 
+                            <!--<option value="7" {if condition="$status == 7"}selected ="selected"{/if}>申请退货</option>--> 
+                            <!--<option value="8" {if condition="$status == 8"}selected ="selected"{/if}>退货中</option>--> 
+                            <!--<option value="9" {if condition="$status == 9"}selected ="selected"{/if}>申请换货</option>--> 
+                            <!--<option value="10" {if condition="$status == 10"}selected ="selected"{/if}>换货中</option>--> 
+                            <!--<option value="11" {if condition="$status == 11"}selected ="selected"{/if}>换货成功</option>--> 
+                            <option value="12" {if condition="$status == 12"}selected ="selected"{/if}>已完成</option> 
+                            <!--<option value="13" {if condition="$status == 13"}selected ="selected"{/if}>用户已取消订单</option>--> 
+                            <!--<option value="14" {if condition="$status == 14"}selected ="selected"{/if}>已完成退货</option>--> 
+                            <!--<option value="15" {if condition="$status == 15"}selected ="selected"{/if}>已退款</option>--> 
+                            <!--<option value="16" {if condition="$status == 16"}selected ="selected"{/if}>已失效</option>--> 
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" value="{$name}" placeholder="请输入收获人姓名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">联系电话</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="mobile" value="{$mobile}" placeholder="请输入收获人电话" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn">搜索</button>
+                </div>
+            </form>
+            <hr>
+
+            <form action="" method="post" class="ajax-form">
+                <div class="layui-tab-item layui-show">
+                    <table class="layui-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 30px;">ID</th>
+                                <th>商品信息</th>
+                                <th>金额</th>
+                                <th>取货信息</th>
+                                <th>收货信息</th>
+                                <th>距离（m）</th>
+                                <th>状态</th>
+                                <th>下单时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 循环数据 --> 
+                            {foreach name="order_list" item="v"}
+                            <tr>
+                                <td>{$v.order_id}</td>
+                                <td>
+                                    <p>{$v.goods_name}</p>
+                                </td>
+                                <td>
+                                    <p>在线支付：{$v.pay_money}</p>
+                                </td>
+                                <td>
+                                    <p>取货人姓名:{$v.name2}</p>
+                                    <p>取货人电话:{$v.mobile2}</p>
+                                    <p>取货人地址:{$v.address2}</p>
+                                </td>
+                                <td>
+                                    <!--                            	<p>用户ID：{$v.member_id}</p>
+                                                                    <p>微信名称:{$v.username}</p>-->
+                                    <p>收货人姓名:{$v.order_name}</p>
+                                    <p>收货人电话:{$v.order_mobile}</p>
+                                    <p>收货人地址:{$v.order_address}</p>
+                                </td>
+                                <td>
+                                    <p>{$v.distance}</p>
+                                </td>
+                                <td>
+                                    {if condition="$v.status == 0"}待添加
+                                    {elseif condition="$v.status == 1"}待添加
+                                    {elseif condition="$v.status == 2"}已添加,等待接单
+                                    {elseif condition="$v.status == 3"}取货中
+                                    {elseif condition="$v.status == 4"}配送中                        	
+                                    {elseif condition="$v.status == 5"}已收货                        	
+                                    {elseif condition="$v.status == 6"}申请退货                        	                       	
+                                    {elseif condition="$v.status == 7"}退货中                      	
+                                    {elseif condition="$v.status == 8"}申请换货                        	
+                                    {elseif condition="$v.status == 9"}换货中
+                                    {elseif condition="$v.status == 10"}换货成功                         
+                                    {elseif condition="$v.status == 11"}已完成                         
+                                    {elseif condition="$v.status == 12"}用户已取消订单                         
+                                    {elseif condition="$v.status == 13"}已完成退货                           
+                                    {elseif condition="$v.status == 14"}已退款                         
+                                    {elseif condition="$v.status == 15"}已失效                        	
+                                    {/if}
+                                </td>
+                                <td>{$v.add_time|date="Y-m-d H:i",###}</td>
+                                <td>
+                                    {if condition="$v.status == 1 && $v.is_chang == 0"}
+                                    <!-- 正常发货 -->
+                                    <a href="javascript:;" url="{:url('admin/order/ship',['order_id'=>$v['order_id'],'type'=>0])}" class="layui-btn layui-btn-normal layui-btn-mini ship">添加到配送订单</a>
+                                    {elseif condition="($v.status == 2 || $v.status == 3) && $v.is_chang == 0"}
+                                    <!-- 正常取消发货 -->
+                                    <a href="javascript:;" url="{:url('admin/order/cancel_delivery',['order_id'=>$v['order_id'],'type'=>0])}" class="layui-btn layui-btn-danger layui-btn-mini cancel_delivery">取消配送</a>                         
+                                    {elseif condition="$v.status == 6"}
+                                    <!-- 退货发货 -->
+                                    <a href="javascript:;" url="{:url('admin/order/ship',['order_id'=>$v['order_id'],'type'=>2])}" class="layui-btn layui-btn-normal layui-btn-mini ship">退货发货</a>                      
+                                    {elseif condition="$v.status == 8"}
+                                    <!-- 换货发货 -->
+                                    <a href="javascript:;" url="{:url('admin/order/ship',['order_id'=>$v['order_id'],'type'=>1])}" class="layui-btn layui-btn-normal layui-btn-mini ship">换货发货</a>     
+                                    {elseif condition="$v.status == 13"}
+                                    <!-- 退款 -->
+                                    <a href="javascript:;" url="{:url('admin/order/refund',['order_id'=>$v['order_id']])}" class="layui-btn layui-btn-normal layui-btn-mini refund">退款</a>
+                                    {elseif condition="$v.status == 5" && $v.status == 10"}
+                                    <!-- 退款 -->
+                                    <a href="javascript:;" url="{:url('admin/order/carry',['order_id'=>$v['order_id']])}" class="layui-btn layui-btn-normal layui-btn-mini carry">设为已完成订单</a>    
+                                    {elseif condition="$v.status == 10"}
+                                    <!-- 退款 -->
+                                    <a href="javascript:;" url="{:url('admin/order/carry',['order_id'=>$v['order_id']])}" class="layui-btn layui-btn-normal layui-btn-mini carry">设为已完成订单</a>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/foreach}
+                            <!--  循环结束 -->
+                        </tbody>
+                    </table>
+                    <!--分页-->
+                    {$order_list->render()}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    // 发货
+    $(".ship").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+    // 取消发货
+    $(".cancel_delivery").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+    // 退款
+    $(".refund").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+    // 同意发货
+    $(".chang").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+// 修改为已完成订单
+    $(".carry").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+</script>
+{/block}

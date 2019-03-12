@@ -1,0 +1,192 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/order/index')}">订单管理</a></li>
+            <li class="layui-this">添加订单</li>
+            <li class=""><a href="{:url('admin/add_order/setting')}">设置配送金额</a></li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/add_order/save')}" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">收货人姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="" required lay-verify="required" placeholder="请输入姓名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">手机号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="mobile" value="" required lay-verify="required" placeholder="请输入手机号" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="goods" value="" required lay-verify="required" placeholder="请输入名称" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">重量</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="weight" value="" required lay-verify="required" placeholder="请输入重量" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">取货人姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name2" value="" required lay-verify="required" placeholder="请输入取货人姓名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">取货人电话</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="mobile2" value="" required lay-verify="required" placeholder="取货人电话" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">经纬度</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="lat2" value="" required lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;"> --
+                            <input type="text" name="lng2" value="" required lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;">
+                            <button type="button" class="layui-btn dizhi" url="{:url('admin/add_order/map?type=1')}" style="margin:0;">选择取货地址</button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">取货地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="address2" value="" required lay-verify="required" placeholder="请输入取货地址" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">经纬度</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="lat" value="" required lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;"> --
+                            <input type="text" name="lng" value="" required lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;">
+                            <button type="button" class="layui-btn dizhi" url="{:url('admin/add_order/map?type=2')}" style="margin:0;">选择送货地址</button>
+                            <!--<button type="button" mini="load" w="1000px" h="800px" href="/app/admin/add_order/callback/showLatLng.html?lat=0&amp;lng=0" class="layui-btn" style="margin:0;">选择地址</button>-->
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">送货地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="address" value="" required lay-verify="required" placeholder="请输入送货地址" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">距离（m）</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="distance" value="" readonly placeholder="距离" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">价格</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="pay_money" value="" readonly placeholder="价格" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">重量加价格</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="weight_money" value="" placeholder="重量加价格" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script>
+    // 方法定义 lat,lng 
+    function GetDistance(lat1, lng1, lat2, lng2) {
+        var radLat1 = lat1 * Math.PI / 180.0;
+        var radLat2 = lat2 * Math.PI / 180.0;
+        var a = radLat1 - radLat2;
+        var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+        var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+                Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+        s = s * 6378137;// EARTH_RADIUS;
+        s = Math.round(s * 10000) / 10000;
+        $(" input[ name='distance' ] ").val(s);
+        getPrice(s);
+
+    }
+
+    //根据距离计算价格
+    function getPrice(range) {
+        $.post('/admin/add_order/getOrderMoney', {range:range}, function (re) {
+            console.log(re);
+            if(re){
+                $(" input[ name='pay_money' ] ").val(re);
+            }
+        });
+    }
+
+    // 调用 return的距离单位为km 大中广场（39.520352,116.698498) 万达广场（39.522119，116.706789）
+//    GetDistance(39.520352, 116.698498, 39.522119, 116.706789);
+
+
+    function mallSelect(lat, lng, address, type) {
+        layer.closeAll();
+        if (type == 1) {
+            $(" input[ name='lng2' ] ").val(lng);
+            $(" input[ name='lat2' ] ").val(lat);
+            $(" input[ name='address2' ] ").val(address);
+        } else {
+            $(" input[ name='lng' ] ").val(lng);
+            $(" input[ name='lat' ] ").val(lat);
+            $(" input[ name='address' ] ").val(address);
+        }
+        // 计算距离
+        lat1 = $(" input[ name='lat' ] ").val();
+        lng1 = $(" input[ name='lng' ] ").val();
+        lat2 = $(" input[ name='lat2' ] ").val();
+        lng2 = $(" input[ name='lng2' ] ").val();
+        if (lat1 && lng1 && lat2 && lng2) {
+            GetDistance(lat1, lng1, lat2, lng2);
+        }
+    }
+    $(".dizhi").click(function () {
+        var url = $(this).attr("url");
+        layer.open({
+            type: 2,
+            title: '选择地址',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['1000px', '550px'],
+            content: [url]
+        });
+    });
+
+    $(document).ready(function () {
+        $(document).on('click', '.lunbo_delete', function () {
+            var _this = $(this);
+            layer.confirm('确定要删除吗？', {
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                layer.closeAll();//关闭所有的窗口
+                $("#" + _this.attr('data-id')).remove();
+            });
+        });
+    });
+</script>
+{/block}

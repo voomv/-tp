@@ -1,0 +1,146 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/peisong_member/index')}">配送员管理</a></li>
+            <li class="layui-this">添加配送员</li>
+            <li class=""><a href="{:url('admin/add_order/position')}">配送员位置</a></li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/peisong_member/save')}" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="" placeholder="请输入用户名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">手机</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="mobile" id="mobile" value="" placeholder="请输入手机" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">验证码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="verify" id="verify" class="layui-input layui-input-inline">
+                            <img src="{:captcha_src()}" alt="点击更换" title="点击更换" onclick="this.src = '{:captcha_src()}?time=' + Math.random()" class="captcha" width="130px">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">短信验证码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="code" class="layui-input layui-input-inline">
+                            <div class="layui-btn" id="duanxin">获取</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" name="password" value="" placeholder="请输入密码" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">重复密码</label>
+                        <div class="layui-input-block">
+                            <input type="password" name="confirm_password" value="" placeholder="请再次输入密码" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">身份证号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="card" value="" placeholder="请输入身份证号" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">身份证正面</label>
+                        <div class="layui-input-block">
+                            <input type="hidden" name="card_positive" value="" class="layui-input layui-input-inline card_positive">
+                            <img src="/public/static/images/shangchuan.png" id="card_positive" style="width: 100px;height: 100px;" />
+                            <input type="file" name="file" class="layui-upload-file addimage" myid="card_positive">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">身份证反面</label>
+                        <div class="layui-input-block">
+                            <input type="hidden" name="card_back" value="" class="layui-input layui-input-inline card_back">
+                            <img src="/public/static/images/shangchuan.png" id="card_back" style="width: 100px;height: 100px;" />
+                            <input type="file" name="file" class="layui-upload-file addimage" myid="card_back">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">居住地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="place" value="" placeholder="请输入居住地址" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否已审核</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="review" value="1" title="是" checked="checked">
+                            <input type="radio" name="review" value="0" title="否">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    var time = 180;
+    $("#duanxin").click(function () {
+        if (time < 180) {
+            return false;
+        }
+        var obj = $(this);
+        var mobile = $("#mobile").val();
+        var verify = $("#verify").val();
+        $.ajax({
+            url: "{:url('admin/peisong_member/sendSms')}",
+            type: 'POST',
+            data: {'mobile': mobile, 'verify': verify},
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    var my_set = setInterval(function () {
+                        if (time > 0) {
+                            time--;
+                            obj.text(time + "s");
+                        } else {
+                            obj.text('重新获取');
+                            clearInterval(my_set);
+                            time = 180;
+                        }
+                    }, 1000);
+                }
+            }
+        })
+    })
+
+    layui.use('upload', function () {
+        $('.addimage').click(function () {
+            var obj = $(this);
+            var id = obj.attr('myid');
+            layui.upload({
+                url: '/api/upload/upload' //上传接口
+                , success: function (res) { //上传成功后的回调
+                    console.log(res)
+                    $('#' + id).attr('src', '' + res.url);
+                    $('.' + id).val('' + res.url);
+                }
+            });
+        })
+    });
+</script>
+{/block}

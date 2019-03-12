@@ -1,0 +1,77 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/peisong_member/index')}">配送员管理</a></li>
+            <li class=""><a href="{:url('admin/peisong_member/add')}">添加配送员</a></li>
+            <li class="layui-this">配送员位置</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <!--<form class="layui-form form-container" action="{:url('admin/admin_user/save')}" method="post">-->
+                <div id="container"  tabindex="0" style="height: 620px;width: 90%;margin-left: 20px;"></div>
+                <!--<div class="layui-form-item">
+                                        <label class="layui-form-label">状态</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="status" value="1" title="启用" checked="checked">
+                                            <input type="radio" name="status" value="0" title="禁用">
+                                        </div>
+                                    </div>
+                
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                        </div>
+                                    </div>-->
+                <!--</form>-->
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.6&key=160cab8ad6c50752175d76e61ef92c50&plugin=AMap.ToolBar'></script>
+<!-- UI组件库 1.0 -->
+<script src="//webapi.amap.com/ui/1.0/main.js"></script>
+<!--<script src="https://webapi.amap.com/maps?v=1.4.8&key=您申请的key值"></script>-->
+<script type="text/javascript">
+    var map = new AMap.Map('container', {
+        center: [116.710121, 39.528053],
+        zoom: 12,
+        resizeEnable: true
+    });
+    $(document).ready(function () {
+        getPositionInfo();
+    });
+    function getPositionInfo() {
+        $.post('/admin/add_order/getMemberPosition', {}, function (data) {
+            if (data) {
+                for (index in data) {
+                    if(data[index].lat && data[index].lng){
+                        addMarker(data[index].name, data[index].lat, data[index].lng);
+                    }
+                }
+            }
+        });
+    }
+    //创建marker
+    function addMarker(name, lat, lng) {
+        var marker = new AMap.Marker({
+            position: new AMap.LngLat(lng, lat),
+            offset: new AMap.Pixel(-10, -10),
+//            icon: '//vdata.amap.com/icons/b18/1/2.png', // 添加 Icon 图标 URL
+//            title: '北京',
+        });
+        marker.setLabel({
+            //修改label相对于maker的位置
+            offset: new AMap.Pixel(-10, -10),
+            content: "<div style='background-color:#00ff00;'>我是:" + name + "</div>"
+        });
+        map.add(marker);
+    }
+</script>
+{/block}
+

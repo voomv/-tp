@@ -1,0 +1,90 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/peisong_member/index')}">配送员管理</a></li>
+            <li class=""><a href="{:url('admin/peisong_member/add')}">添加配送员</a></li>
+            <li class="layui-this">编辑配送员</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/peisong_member/update')}" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="{$detail.name}" placeholder="请输入用户名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">手机</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="mobile" value="{$detail.mobile}" placeholder="请输入手机" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">身份证号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="card" value="{$detail.card}" placeholder="请输入身份证号" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">身份证正面</label>
+                        <div class="layui-input-block">
+                            <input type="hidden" name="card_positive" value="{$detail.card_positive}" class="layui-input layui-input-inline card_positive">
+                            <img src="{$detail.card_positive|default='/public/static/images/shangchuan.png'}" id="card_positive" style="width: 100px;height: 100px;" />
+                            <input type="file" name="file" class="layui-upload-file addimage" myid="card_positive">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">身份证反面</label>
+                        <div class="layui-input-block">
+                            <input type="hidden" name="card_back" value="{$detail.card_back}" class="layui-input layui-input-inline card_back">
+                            <img src="{$detail.card_back|default='/public/static/images/shangchuan.png'}" id="card_back" style="width: 100px;height: 100px;" />
+                            <input type="file" name="file" class="layui-upload-file addimage" myid="card_back">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">居住地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="place" value="{$detail.place}" placeholder="请输入居住地址" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否已审核</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="review" value="1" title="是" {if condition="$detail.review==1"} checked="checked"{/if}>
+                            <input type="radio" name="review" value="0" title="否" {if condition="$detail.review==0"} checked="checked"{/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <input type="hidden" name="id" value="{$detail.id}">
+                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    layui.use('upload', function(){
+        $('.addimage').click(function(){
+            var obj = $(this);
+            var id = obj.attr('myid');
+            layui.upload({
+                url: '/api/upload/upload' //上传接口
+                ,success: function(res){ //上传成功后的回调
+                  console.log(res)
+                  $('#'+id).attr('src',''+res.url);
+                  $('.'+id).val(''+res.url);
+                }
+              });
+        })
+    });
+</script>
+{/block}

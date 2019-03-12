@@ -1,0 +1,111 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">呼叫订单管理</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <table class="layui-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 30px;">ID</th>
+                        <th>订单信息</th>
+                        <th>呼叫时间</th>
+                        <th>订单类型</th>
+                        <th>状态</th>
+                        <th>已呼叫时长</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach name="order_list" item="vo"}
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>
+                            <p>订单ID:{$vo.order_id}</p>
+                            <p>收货人:{$vo.order_name}</p>
+                            <p>收货电话:{$vo.order_mobile}</p>
+                            <p>收货地址:{$vo.order_address}</p>
+                        </td>
+                        <td>{$vo.add_time|date="Y-m-d H:i:s",###}</td>
+                        <td>
+                            {if condition="$vo.type == 0"}正常发货
+                            {elseif condition="$vo.type == 1"}换货
+                            {elseif condition="$vo.type == 2"}退货
+                            {/if}
+                        </td>
+                        <td><span style="color: red;">等待接单</span></td>
+                        <td>{$vo.time}</td>
+                        <td>
+                            <a href="javascript:;" url="{:url('admin/peisong_order/paidan',['order_id'=>$vo['order_id']])}" class="layui-btn layui-btn-normal layui-btn-mini paidan">派单</a>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+                <!--分页-->
+                {$order_list->render()}
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    /*派单*/
+    $(".paidan").click(function(){
+        var url = $(this).attr("url");
+        $.ajax({
+            url:url,
+            type: 'GET',
+            success:function(res){
+                if(res.code == 0){
+                    layer.msg(res.msg);
+                }else{
+                    var html = "";
+                    for(var i in res.members){
+                        var s = res.members[i]
+                        html += "<div style='display:flex;margin-bottom:5px'><div id='member' style='margin:4px 5px;'><input type='radio' name='member' value='"+s.id+"'></div><div>快递员姓名：<span style='color:red'>"+s.name+"</span></div></div>";
+                    }
+                    html="<div style='padding:20px 0 0;max-width:200px;margin:0 auto'>"+html+"</div>"
+                    layer.open({
+                        type: 1,
+                        title: '选择在线的快递员进行派单',
+                        closeBtn:0,
+                        shadeClose: false,
+                        shade: 0.5,
+                        move: '.mine-move',
+                        area: ['20%', '30%'],
+                        content: html,
+                        btn: ['确认', '取消'],
+                        yes: function(index, layero){
+                            var member_id = $('#member input[name="member"]:checked').val();
+                            if(member_id == null){
+                                layer.msg("请选择配送员!");
+                                return false;
+                            }
+                            $.ajax({
+                                url: url,
+                                type: 'POST',
+                                data: {'member_id':member_id},
+                                success:function(data){
+                                    layer.msg(data.msg);
+                                    if(data.code == 1){
+                                        setTimeout(function(){location.reload()},1500);
+                                    }
+                                }
+                            })                            
+                        },
+                        btn2: function(index, layero){
+                            location.reload() 
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+{/block}

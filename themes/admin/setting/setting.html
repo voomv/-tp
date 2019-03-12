@@ -1,0 +1,166 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">小程序配置</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" id="MyForm">  
+                    
+                    <blockquote class="layui-elem-quote">用户端小程序APPID,密钥配置</blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['UserAppID']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[UserAppID]" value="{$config_list['UserAppID']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['UserAppID']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>  
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['UserAppSecret']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[UserAppSecret]" value="{$config_list['UserAppSecret']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['UserAppSecret']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div> 
+
+                    <blockquote class="layui-elem-quote">配送端小程序APPID,密钥配置</blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['DistributionAppID']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[DistributionAppID]" value="{$config_list['DistributionAppID']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['DistributionAppID']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>  
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['DistributionAppSecret']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[DistributionAppSecret]" value="{$config_list['DistributionAppSecret']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['DistributionAppSecret']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div> 
+
+                    <blockquote class="layui-elem-quote">支付配置</blockquote>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['MchID']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[MchID]" value="{$config_list['MchID']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['MchID']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div> 
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['WxKey']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[WxKey]" value="{$config_list['WxKey']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['WxKey']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div> 
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['ApiclientCert']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" id="ApiclientCert" name="config[ApiclientCert]" value="{$config_list['ApiclientCert']['v']|default=''}" placeholder="请上传{$config_list['ApiclientCert']['name']}" readonly   unselectable="on"  class="layui-input">
+                            <input type="file" name="file" lay-type="file" class="layui-upload-file AddApiclientCert" myid="ApiclientCert"/>
+                        </div>
+                    </div>    
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['ApiclientKey']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" id="ApiclientKey" name="config[ApiclientKey]" value="{$config_list['ApiclientKey']['v']|default=''}" placeholder="请上传{$config_list['ApiclientKey']['name']}" readonly   unselectable="on"  class="layui-input">
+                            <input type="file" name="file" lay-type="file" class="layui-upload-file AddApiclientKey" myid="ApiclientKey"/>
+                        </div>
+                    </div> 
+
+                    <blockquote class="layui-elem-quote">短信配置</blockquote>   
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['SmsAppID']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[SmsAppID]" value="{$config_list['SmsAppID']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['SmsAppID']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>  
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['SmsAppKey']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[SmsAppKey]" value="{$config_list['SmsAppKey']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['SmsAppKey']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>   
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['SmsTemplateId']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[SmsTemplateId]" value="{$config_list['SmsTemplateId']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['SmsTemplateId']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="width: 140px;">{$config_list['SmsSign']['name']}</label>
+                        <div class="layui-input-block" style="margin-left: 170px;">
+                            <input type="text" name="config[SmsSign]" value="{$config_list['SmsSign']['v']|default=''}" required  lay-verify="required" placeholder="请输入{$config_list['SmsSign']['name']}" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>                   
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <div class="layui-btn" id="submit" lay-filter="*">设置</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    // ajax提交
+    $("#submit").click(function(){
+        $.ajax({
+            url:"{:url('admin/Setting/setting')}",
+            data:$("#MyForm").serialize(),
+            type:"post",
+            success:function(res){
+                // console.log(res);
+                layer.msg(res.msg);
+                if(res.code==1){
+                    //上传成功
+                    setTimeout(function(){location.reload();},1500);
+                }
+            }
+        });
+    })
+
+    layui.use('upload', function(){
+        // 支付证书上传
+        $('.AddApiclientCert').click(function(){
+            var obj = $(this);
+            var id = obj.attr('myid');
+            layui.upload({
+                url: '/api/upload/uploadFile' //上传接口
+                ,success: function(res){ //上传成功后的回调
+                  console.log(res)
+                  $('#'+id).val(''+res.url);
+                  layer.msg('上传成功',{icon:1});
+                }
+              });
+        })
+        // 支付密钥上传
+        $('.AddApiclientKey').click(function(){
+            var obj = $(this);
+            var id = obj.attr('myid');
+            layui.upload({
+                url: '/api/upload/uploadFile' //上传接口
+                ,success: function(res){ //上传成功后的回调
+                  console.log(res)
+                  $('#'+id).val(''+res.url);
+                  layer.msg('上传成功',{icon:1});
+                }
+              });
+        })
+    });
+</script>
+{/block}

@@ -1,0 +1,123 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">公司信息配置</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/system/updatecompanyConfig')}" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公司名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="company_config[name]" value="{$company_config.name|default=''}"  placeholder="请输入公司名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公司LOGO</label>
+                        <div class="layui-input-block">
+                            <input type="hidden" name="company_config[logo]" value="{$company_config.logo|default=''}" class="layui-input layui-input-inline logo">
+                            <img src="{$company_config.logo|default='/public/static/images/shangchuan.png'}" id="logo" style="width: 100px;height: 100px;" />
+                            <input type="file" name="file" class="layui-upload-file addimage" myid="logo">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">电话号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="company_config[tel]" value="{$company_config.tel|default=''}"  placeholder="请输入电话号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">微信号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="company_config[weixin]" value="{$company_config.weixin|default=''}"  placeholder="请输入微信号" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公司地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="company_config[address]" value="{$company_config.address|default=''}"  placeholder="请输入公司地址" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">首页标语</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="company_config[slogan]" value="{$company_config.slogan|default=''}"  placeholder="首页标语" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>                    
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公司介绍</label>
+                        <div class="layui-input-block">
+                            <textarea name="company_config[content]" placeholder="" class="layui-textarea" id="content">{$company_config.content|default=''}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script src="__JS__/ueditor/ueditor.config.js"></script>
+<script src="__JS__/ueditor/ueditor.all.min.js"></script>
+{/block}
+{block name="script"}
+<script>
+    $(function() {
+        var ue = UE.getEditor('content'),
+            uploadEditor = UE.getEditor('upload-photo-btn'),
+            photoListItem,
+            uploadImage;
+
+        uploadEditor.ready(function () {
+            uploadEditor.setDisabled();
+            uploadEditor.hide();
+            uploadEditor.addListener('beforeInsertImage', function (t, arg) {
+                $.each(arg, function (index, item) {
+                    photoListItem = '<div class="photo-list"><input type="text" name="photo[]" value="' + item.src + '" class="layui-input layui-input-inline">';
+                    photoListItem += '<button type="button" class="layui-btn layui-btn-danger remove-photo-btn">移除</button></div>';
+
+                    $('#photo-container').append(photoListItem).on('click', '.remove-photo-btn', function () {
+                        $(this).parent('.photo-list').remove();
+                    });
+                });
+            });
+        });
+
+        $('#upload-photo-btn').on('click', function () {
+            uploadImage = uploadEditor.getDialog("insertimage");
+            uploadImage.open();
+        });
+    });
+
+
+    layui.use('upload', function(){
+        $('.addimage').click(function(){
+            var obj = $(this);
+            var id = obj.attr('myid');
+            layui.upload({
+                url: '/api/upload/upload' //上传接口
+                ,success: function(res){ //上传成功后的回调
+                  console.log(res)
+                  $('#'+id).attr('src',''+res.url);
+                  $('.'+id).val(''+res.url);
+                }
+              });
+        })
+    });
+</script>
+{/block}

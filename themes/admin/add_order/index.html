@@ -1,0 +1,263 @@
+<link rel="stylesheet" href="https://cache.amap.com/lbs/static/main1119.css"/>
+<script src="/public/common/js/jquery.tmpl.min.js"></script>
+<script src="https://webapi.amap.com/maps?v=1.3&key=2cc802b0e3d6a42aa87beea5941fb028&plugin=AMap.PolyEditor,AMap.CircleEditor"></script>
+<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox-content">
+                <div class="row">
+                    <form action="<?=url('waimai.address/setaddress')?>" id="form-address" method="post"
+                          class="form-horizontal" role="form">
+                        <div class="col-sm-12">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5>店铺坐标点</h5>
+                                </div>
+                            </div>
+                            <div class="ibox float-e-margins">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <input value="<?=empty($detail->lat) ? '' : $detail->lat ?>" id="lat" name="lat"
+                                               type="text" class="form-control" placeholder="坐标点">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input value="<?=empty($detail->lng) ? '' : $detail->lng ?>" id="lng" name="lng"
+                                               type="text" class="form-control" placeholder="坐标点">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input value="<?=empty($detail->address) ? '' : $detail->address ?>"
+                                               id="address" name="address" type="text" class="form-control"
+                                               placeholder="坐标点">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" mini="load" w="1000px" h="800px" href="<?=url('index/map',['callback'=>'showLatLng']);?>?lat=<?=isset($detail->lat)?$detail->lat:'0';?>&lng=<?=isset($detail->lng)?$detail->lng:'0';?>" class="btn btn-w-m btn-info" style
+                                            ="margin:0;">选择地址
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button type="button" mini="submit" for="form-address" w="1000px" h="800px" href="<?=url('index/map');?>" style
+                                        ="margin:0;" class="btn btn-w-m btn-info">保存提交
+                                        </button>
+                                    </div>
+                                    <script>
+                                        function showLatLng(lat, lng, addr) {
+                                            layer.closeAll();
+                                            layer.msg('选取经纬度成功！');
+                                            $("#lat").val(lat);
+                                            $("#lng").val(lng);
+                                            $("#address").val(addr);
+                                        }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>配送范围</h5>
+                </div>
+                <div class="ibox-content padTop" style="position: relative;height: 56rem">
+                    <form action="<?=url('waimai.address/setinfo')?>" method="post" id="form-addressinfo">
+                        <div class="col-sm-6">
+                            <div class="col-sm-6">
+                                <span class="c-red">*</span>配送费用
+                                <input type="text" value="<?=empty($detail->peisong) ? '' : round($detail->peisong/100,2)?>" name="peisong" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="c-red">*</span>最低起送价
+                                <input type="text" value="<?=empty($detail->qijia) ? '' : round($detail->qijia/100,2)?>" name="qijia" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                距商家N米后
+                                <input type="text" value="<?=empty($detail->mi) ? '' : $detail->mi ?>"  name="mi" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                每500米加价
+                                <input type="text" value="<?=empty($detail->miprice) ? '' : round($detail->miprice/100,2)?>"  name="miprice" class="form-control">
+                            </div>
+                            <div class="col-sm-12">
+                                特殊时间段配送设置
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>开始时间</th>
+                                        <th>结束时间</th>
+                                        <th>起送价</th>
+                                        <th>配送价</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="jq_taocan_body">
+                                    <?php
+
+
+                                     $special = empty($detail->special) ? [] :json_decode($detail->special,true);
+
+
+                                    ?>
+                                    <?php foreach($special as $val) {  ?>
+                                    <tr>
+                                        <td>
+                                            <input class="form-control" value="<?=empty($val['s_time']) ? '' : $val['s_time'] ?>" name="data[s_time][]">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" value="<?=empty($val['e_time']) ? '' : $val['e_time'] ?>" name="data[e_time][]">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" value="<?=empty($val['qijia']) ? '' : round($val['qijia']/100,2) ?>" name="data[qijia][]">
+                                        </td>
+                                        <td>
+                                            <input class="form-control" value="<?=empty($val['peisong']) ? '' : round($val['peisong']/100,2) ?>" name="data[peisong][]">
+                                        </td>
+                                        <td style="width:10%"><a class="jq_delete_sku delBtn" href="javascript:void(0);">删除</a></td>
+                                    </tr>
+                                    <?php } ?>
+                                    <input id="range" type="hidden" name="range" value="<?=empty($detail->range) ? '' : $detail->range ?>">
+                                    </tbody>
+                                </table>
+                                <a id="jq_add_taocan">添加</a>
+                            </div>
+                            <div class="col-sm-3 col-sm-offset-3">
+                                <button type="button" mini="submit" for="form-addressinfo" w="1000px" h="800px"
+                                        href="<?=url('index/map');?>" class="btn btn-w-m btn-info">保存提交
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                <div class="col-sm-6" style="position: relative;height: 54rem;padding: 0;">
+                    <div id="container">
+                        <?php if(empty($detail->lat) || empty($detail->lng) ){?>
+                        <div class="alert alert-warning ">
+                            必须先设定店铺坐标位置！！！
+                        </div>
+                        <?php } ?>
+                    </div>
+                    <div class="button-group">
+                        <input type="button" class="button" value="编辑区域" onClick="editor.startEditPolygon()"/>
+                        <input type="button" class="button" value="结束编辑" onClick="editor.closeEditPolygon(1)"/>
+                        <input type="button" class="button" value="取消编辑" onClick="editor.closeEditPolygon(2)"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script id="jq_taocan_tpl" type="text/x-jquery-tmpl">
+    <tr >
+       <td><input  class="form-control" value="" name="data[s_time][]"></td>
+         <td>  <input  class="form-control" value="" name="data[e_time][]">
+         </td>
+         <td>
+             <input  class="form-control" value="" name="data[qijia][]">
+         </td>
+         <td>
+             <input  class="form-control" value="" name="data[peisong][]">
+         </td>
+        <td><a  class="jq_delete_sku delBtn" href="javascript:void(0);">删除</a></td>
+    </tr>
+</script>
+<script>
+    var lng = '<?=empty($detail->lng) ? "" : $detail->lng ?>';
+    var lat = '<?=empty($detail->lat) ? "" : $detail->lat ?>';
+    var editorTool, map = new AMap.Map("container", {
+        resizeEnable: true,
+        center: [lng, lat],//地图中心点
+        zoom: 13,//地图显示的缩放级别
+
+    });
+    new AMap.Marker({
+        map: map,
+        position: [lng, lat],
+        icon: new AMap.Icon({
+            size: new AMap.Size(40, 50),  //图标大小
+            image: "https://webapi.amap.com/theme/v1.3/images/newpc/way_btn2.png",
+            imageOffset: new AMap.Pixel(0, -60)
+        })
+    });
+
+    var latlngstring = '<?=empty($detail->range) ? "": html_entity_decode($detail->range)?>';
+  console.log(latlngstring);
+
+    var editor = {};
+    editor._polygon = (function () {
+        if(latlngstring == '' ){
+            var arr = [ //构建多边形经纬度坐标数组
+                [lng - 0 + 0.0009, lat - 0 + 0.0009],
+                [lng - 0.0009, lat - 0 + 0.0009],
+                [lng - 0.001, lat - 0.001],
+                [lng - 0 + 0.003, lat - 0 + 0.0003],
+            ];
+        }else{
+            var latlngsObj = JSON.parse(latlngstring);
+            var arr = [];
+            for (var i in latlngsObj) {
+                arr[i] = [latlngsObj[i].lng, latlngsObj[i].lat];
+            }
+        }
+
+        return new AMap.Polygon({
+            map: map,
+            path: arr,
+            strokeColor: "#0000ff",
+            strokeOpacity: 1,
+            strokeWeight: 3,
+            fillColor: "#0053f5",
+            fillOpacity: 0.35
+        });
+    })();
+    map.setFitView();
+    editor._polygonEditor = new AMap.PolyEditor(map, editor._polygon);
+    editor.startEditPolygon = function () {
+      console.log(1)
+        editor._polygonEditor.open();
+    };
+    editor.closeEditPolygon = function (colose) {
+        var latlngs = [];
+        editor._polygonEditor.close();
+        if (colose == 1) {
+            var path = editor._polygon.getPath();
+            for (var i in path) {
+                var json = {};
+                json.lat = path[i].lat;
+                json.lng = path[i].lng;
+                latlngs.push(json);
+            }
+            var latlngsStr = JSON.stringify(latlngs);
+            $("#range").val(latlngsStr);
+        } else {
+            var latlngsStr = $("#range").val();
+            var latlngsObj = JSON.parse(latlngsStr);
+            var arr = [];
+            for (var i in latlngsObj) {
+                arr[i] = [latlngsObj[i].lng, latlngsObj[i].lat];
+            }
+            if (arr != '') {
+                editor._polygon.setPath(arr);
+            }
+        }
+    }
+    console.log(editor)
+</script>
+<script>
+    $(document).ready(function (e) {
+        $(document).on('click', '.jq_delete_sku', function () {
+            $(this).parent().parent().remove();
+        });
+        $("#jq_add_taocan").click(function () {
+            // mynum++;
+            var obj = {
+                num: 1,
+                photo: '',
+                name: '',
+                taocan_num: 1,
+            };
+            $("#jq_taocan_tpl").tmpl(obj).appendTo('#jq_taocan_body');
+        });
+    });
+</script>

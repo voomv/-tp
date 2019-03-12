@@ -1,0 +1,354 @@
+{extend name="base" /}
+{block name="body"}
+<link rel="stylesheet" href="__CSS__/style.min862f.css">
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/mall/index')}">商品管理</a></li> 
+            <li class=""><a href="{:url('admin/mall/add')}">添加商品</a></li> 
+            <li class="layui-this">编辑商品</li> 
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" id="MyForm">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属分类</label>
+                        <div class="layui-input-block">
+                            <select name="type_id" lay-verify="required">
+                                <option value="1" {if condition="$mall.type_id==1"} selected="selected"{/if}>电动车</option>
+                                <option value="2" {if condition="$mall.type_id==2"} selected="selected"{/if}>电瓶</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="{$mall.name}" required  lay-verify="required" placeholder="请输入标题" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品简介</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title"  value="{$mall.title}" required  lay-verify="required" placeholder="请输入简介" class="layui-input">
+                        </div>
+                    </div>
+                    <input type="hidden" name="goods_id" value="{$mall.goods_id}">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">价格</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="price" value="{$mall.price/100}" placeholder="价格" class="layui-input" lay-verify="required|number">
+                        </div>
+                    </div>
+                     <div class="layui-form-item">
+                        <label class="layui-form-label">延保一年</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="warrantyone" value="{$mall.warrantyone/100}" placeholder="价格" class="layui-input" lay-verify="required|number">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">延保二年</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="warrantytwo" value="{$mall.warrantytwo/100}" placeholder="价格" class="layui-input" lay-verify="required|number">
+                        </div>
+                    </div>
+					 <div class="layui-form-item">
+                        <label class="layui-form-label">图片</label>
+
+                        <div class="layui-input-block">
+							<input type="hidden" name="photo" value="{$mall.photo}" class="layui-input layui-input-inline photo">
+                            <img src="{$mall.photo|default='/public/static/images/shangchuan.png'}" id="photo"  style="width: 100px;height: 100px;" />
+                             <button type="button" class="layui-btn" id="addimage">图片上传</button>                                             
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">首页图片</label>
+
+                        <div class="layui-input-block">
+                            <input type="hidden" name="homeImg" value="{$mall.homeImg}" class="layui-input layui-input-inline homeImg">
+                            <img src="{$mall.homeImg|default='/public/static/images/shangchuan.png'}" id="homeImg"  style="width: 100px;height: 100px;" />
+                             <button type="button" class="layui-btn" id="homeimage">图片上传</button>                                             
+                        </div>
+                    </div>                    
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">BANNER</label>
+                        <div class="layui-input-block">
+                            <div class="layui-upload">
+                              <button type="button" class="layui-btn" id="banner">多图片上传</button>
+                                <div class="layui-upload-list" id="img"  style="display:flex;flex-wrap: wrap;margin-top: 20px">
+                                    {if condition="!empty($mall->banner)"}
+                                    {php}$thumb = json_decode($mall->banner);{/php}
+                                    {foreach name="$thumb" item="v"}
+                                        <div style="position:relative;" class="out" data-type="headImg">
+                                            <input type="hidden" readonly name="banner[]" value="{$v}">
+                                            <img src="{$v}" style="width:89px;height:89px">
+                                            <div style="position: absolute;right: 0;top: 0;font-size:20px;line-height: 11px;cursor: pointer;" class="remove">x</div>                                            
+                                        </div>
+                                         
+                                    {/foreach}
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="layui-form-item">
+                    	<label class="layui-form-label">类型SKU</label>
+                    	<div class="layui-input-block">
+                    		
+                    		<div class="col-sm-9">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>规格</th>
+                                        <th>以旧换新价格</th>
+                                        <th>直接购买价格</th>
+                                        <th>操作</th>
+                                    </tr>  
+                                    </thead>
+                                    <tbody id="jq_lunbo_body">
+                                    <div id="jq_form">
+                                         <?php foreach($skus as $val) { ?>
+                                        <tr id="image_<?=$val->sku_id?>">
+                                           
+                                            <td>
+                                                <input placeholder="类型如:36V12h" class="layui-input layui-input-inline" value="<?=$val->name?>" name="oldsku[<?=$val->sku_id?>][name]">
+                                            </td>
+                                            <td>
+                                                <input placeholder="元" class="layui-input layui-input-inline" value="<?=round($val->news_money/100,2)?>" name="oldsku[<?=$val->sku_id?>][news_money]">
+                                            </td>
+                                            <td>
+                                                <input placeholder="元" class="layui-input layui-input-inline" value="<?=round($val->price/100,2)?>" name="oldsku[<?=$val->sku_id?>][price]">
+                                            </td>                                           
+                                            <td><a data-id="image_<?=$val->sku_id?>" sku_id="<?=$val->sku_id?>" class="sku_delete" href="javascript:void(0);">删除</a></td>
+                                        </tr>
+                                            <?php } ?>
+
+                                    </div>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <a class="layui-btn layui-btn-normal" id="jq_add_image">添加产品类型</a>  
+                            </div>
+                    	</div>
+                    	
+                    </div>
+ 					<div class="layui-form-item">
+                        <label class="layui-form-label">内容</label>
+                        <div class="layui-input-block">
+                            <textarea name="details" placeholder="" class="layui-textarea" lay-verify="required" id="content">{$mall.details}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-from-item">
+                    	 <label class="layui-form-label"></label>
+                    	 <div class="layui-input-block" style="color:red;">
+                           多个请以中文逗号分隔
+                        </div>
+                    </div>                   
+					<div class="layui-form-item">
+                        <label class="layui-form-label">承诺</label>
+                        <div class="layui-input-block">
+                            <textarea name="admit" placeholder="请输入承诺" class="layui-textarea" lay-verify="required">{$mall.admit}</textarea>
+                        </div>
+                    </div>                                          
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">显示到首页</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_home" value="1" title="是" {if condition="$mall.is_home==1"} checked="checked"{/if}>
+                            <input type="radio" name="is_home" value="2" title="否" {if condition="$mall.is_home==2"} checked="checked"{/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">上架</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_online" value="1" title="是" {if condition="$mall.is_online==1"} checked="checked"{/if}>
+                            <input type="radio" name="is_online" value="2" title="否" {if condition="$mall.is_online==2"} checked="checked"{/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">库存</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="stock" value="{$mall.stock}" required  class="layui-input lay-verify="required|number"">
+                        </div>
+                    </div>
+ 					<div class="layui-form-item">
+                        <label class="layui-form-label">月销量</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sales" value="{$mall.sales}" required  lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="orderby" value="{$mall.orderby}" required  lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <div class="layui-btn" id="submit">保存</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>    
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script src="__JS__/ueditor/ueditor.config.js"></script>
+<script src="__JS__/ueditor/ueditor.all.min.js"></script>
+<script src="__JS__/layui2/layui.js"></script>
+{/block}
+{block name="script"}
+<script>
+    $("#submit").click(function(){
+        console.log($("#MyForm").serialize());
+        $.ajax({
+            url:"{:url('admin/mall/update')}",
+            data:$("#MyForm").serialize(),
+            type:"post",
+            success:function(res){
+                console.log(res);
+                layer.msg(res.msg);
+                if(res.code==1){
+                    //上传成功
+                    setTimeout(function(){window.location.href="{:url('admin/mall/index')}";},1500);
+                }
+            }
+        });
+    })
+
+    $(document).on("click",".remove",function(){
+        $(this).parent(".out").remove()
+    })    
+    layui.use('upload', function(){  
+        //多图片上传
+        layui.upload.render({
+            elem: '#banner',
+            url: "{:url('api/upload/upload')}",
+            size:0,
+            multiple: true,
+            number:10,
+            done: function(res){
+                //上传完毕
+                // console.log(res);
+                var d = '<div style="position:relative" class="out" data-type="headImg"><input type="hidden" readonly name="banner[]" value="'+res.url+'"><img src="'+res.url+'" style="width:100px;height:89px"><div style="position: absolute;right:0;top:0;font-size: 20px;line-height: 11px;cursor:pointer;" class="remove">×</div></div>'
+                $('#img').append(d)
+            }
+        });
+
+        //单图上传
+        layui.upload.render({
+            elem: '#addimage',
+            url: "{:url('api/upload/upload')}",
+            size:0,
+            multiple: false,
+            done: function(res){
+                //上传完毕
+                //console.log(res)
+                $('#photo').attr('src',''+res.url);
+                $('.photo').val(''+res.url);
+            }
+        });  
+        //单图上传
+        layui.upload.render({
+            elem: '#homeimage',
+            url: "{:url('api/upload/upload')}",
+            size:0,
+            multiple: false,
+            done: function(res){
+                //上传完毕
+                //console.log(res)
+                $('#homeImg').attr('src',''+res.url);
+                $('.homeImg').val(''+res.url);
+            }
+        });                         
+    })    
+
+    $(function() {
+        var ue = UE.getEditor('content'),
+            uploadEditor = UE.getEditor('upload-photo-btn'),
+            photoListItem,
+            uploadImage;
+
+        uploadEditor.ready(function () {
+            uploadEditor.setDisabled();
+            uploadEditor.hide();
+            uploadEditor.addListener('beforeInsertImage', function (t, arg) {
+                $.each(arg, function (index, item) {
+                    photoListItem = '<div class="photo-list"><input type="text" name="photo[]" value="' + item.src + '" class="layui-input layui-input-inline">';
+                    photoListItem += '<button type="button" class="layui-btn layui-btn-danger remove-photo-btn">移除</button></div>';
+
+                    $('#photo-container').append(photoListItem).on('click', '.remove-photo-btn', function () {
+                        $(this).parent('.photo-list').remove();
+                    });
+                });
+            });
+        });
+
+        $('#upload-photo-btn').on('click', function () {
+            uploadImage = uploadEditor.getDialog("insertimage");
+            uploadImage.open();
+        });
+    });
+
+    $("#jq_add_image").click(function(){
+
+    	var id = Math.random().toString(36).substr(2);
+
+
+       var html= '<tr class="out layui-input-block"><td><input placeholder="类型如:36V12Ah" class="layui-input layui-input-inline" value="" name="sku['+id+'][name]"></td><td><input placeholder="元" class="layui-input layui-input-inline" value="" name="sku['+id+'][news_money]"></td><td><input placeholder="元" class="layui-input layui-input-inline" value="" name="sku['+id+'][price]"></td><td><a class="lunbo_delete" href="javascript:void(0);">删除</a></td></tr>';
+        $("#jq_lunbo_body").append(html);
+
+
+    });
+ 
+	$('#jq_lunbo_body').on('click','.lunbo_delete',function(){
+		
+		$(this).parent().parent().remove()
+	})
+	layui.use('upload', function(){
+        $('.addimage').click(function(){
+            var obj = $(this);
+            var id = obj.attr('myid');
+            layui.upload({
+                url: '/api/upload/upload' //上传接口
+                ,success: function(res){ //上传成功后的回调
+                  console.log(res)
+                  $('#'+id).attr('src',''+res.url);
+                  $('.'+id).val(''+res.url);
+                }
+              });
+        })
+    });
+    //删除数据库已添加的SKU属性
+        $(document).on('click','.sku_delete',function(){
+            var _this = $(this);
+            var sku_id = $(this).attr("sku_id");
+            layer.confirm('确定要删除吗？', {
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                if(sku_id == ""){
+                     layer.msg('删除失败,请重试!');
+                }else{
+                    $.ajax({
+                      url: '/admin/mall/skuDelete',
+                      type: 'POST',
+                      data: {sku_id: sku_id},
+                      success:function(code){
+                        if(code == 1){
+                           layer.msg('删除成功!');
+                           $("#"+_this.attr('data-id')).remove();
+                        }else{
+                           layer.msg('删除失败,请重试!');
+                        }
+                      }
+                  })
+                }
+            });
+
+        });    
+</script>
+{/block}

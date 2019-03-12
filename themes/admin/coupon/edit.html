@@ -1,0 +1,78 @@
+{extend name="base" /}
+{block name="body"}
+<link rel="stylesheet" href="__CSS__/style.min862f.css">
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/coupon/index')}">优惠券管理</a></li> 
+            <li class=""><a href="{:url('admin/coupon/add')}">添加优惠券</a></li> 
+            <li class="layui-this">修改优惠券</li> 
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/coupon/update',['id'=>$coupon.id])}" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">标题</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" value="{$coupon.title}" required  lay-verify="required" placeholder="请输入标题" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">优惠价格</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="price" value="{$coupon.price/100}" placeholder="价格" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$coupon.id}">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">满额可用</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="man_price" value="{$coupon.man_price/100}" placeholder="价格" class="layui-input" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开始时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="bg_data" value="{$coupon.bg_data|date='Y-m-d H:i',###}" class="layui-input datetime" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结束时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="end_data" value="{$coupon.end_data|date='Y-m-d H:i',###}" class="layui-input datetime" lay-verify="required">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发放数量</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="num" value="{$coupon.num}" placeholder="发放数量" class="layui-input" lay-verify="required|number">
+                        </div>
+                    </div>
+                     <div class="layui-form-item">
+                        <label class="layui-form-label">是否上线</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_online" value="1" title="是" {if condition="$coupon.is_online==1"} checked="checked"{/if}>
+                            <input type="radio" name="is_online" value="2" title="否" {if condition="$coupon.is_online==2"} checked="checked"{/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="orderby" value="{$coupon.orderby}" placeholder="排序" class="layui-input" lay-verify="required|number">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

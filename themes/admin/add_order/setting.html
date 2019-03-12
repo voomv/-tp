@@ -1,0 +1,105 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/order/index')}">订单管理</a></li>
+            <li class=""><a href="{:url('admin/add_order/add')}">添加订单</a></li>
+            <li class="layui-this">设置配送金额</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/add_order/setinfo')}" method="post" style="max-width: 830px;margin: 23px;">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">起送价（元）</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="lat" name="qijia" value="{$list.qijia}"  lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;">
+                            &nbsp;&nbsp;&nbsp;起送距离（米）
+                            <input type="text" id="lng" name="range" value="{$list.range}"  lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">每N米后（米）</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="lat" name="mi" value="{$list.mi}"  lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;"> 
+                            &nbsp;&nbsp;&nbsp;配送价（元）&nbsp;&nbsp;&nbsp;
+                            <input type="text" id="lng" name="miprice" value="{$list.miprice}"  lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
+                                    <th>起送价</th>
+                                    <th>配送价</th>
+                                    <th>操作</th>
+                                </tr> 
+                            </thead>
+                            <tbody id="jq_taocan_body">
+                                {if condition="$list neq null"}
+                                    {volist name="special" id="vo"}
+                                        <tr>
+                                            <td><input type="text" class="layui-input" placeholder="HH:mm:ss" name="data[s_time][]" value="{$vo->s_time}"></td>
+                                            <td><input type="text" class="layui-input" placeholder="HH:mm:ss" name="data[e_time][]" value="{$vo->e_time}"></td>
+                                            <td><input type="text" class="layui-input" placeholder="HH:mm:ss" name="data[peisong][]" value="{$vo->peisong}"></td>
+                                            <td><input type="text" class="layui-input" placeholder="HH:mm:ss" name="data[qijia][]" value="{$vo->qijia}"></td>
+                                            <td><a class="jq_delete_sku delBtn" href="javascript:void(0);">删除</a></td>
+                                        </tr>
+                                    {/volist}
+                                {/if}
+                            </tbody>
+                        </table>
+                        <button class="layui-btn" type="button" id="jq_add_taocan">
+                            <i class="layui-icon">&#xe608;</i> 添加
+                        </button>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">保存</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script src="/public/static/js/layui2/layui.js" charset="utf-8"></script>
+
+<script>
+    $(document).ready(function (e) {
+        $(document).on('click', '.jq_delete_sku', function () {
+            $(this).parent().parent().remove();
+        });
+        $("#jq_add_taocan").click(function () {
+            // mynum++;
+            var html = '<tr>';
+            html += '<td><input type="text" class="layui-input" placeholder="HH:mm:ss" name="data[s_time][]"></td>';
+            html += '<td><input type="text" class="layui-input" placeholder="HH:mm:ss" name="data[e_time][]"></td>';
+            html += '<td><input type="text" class="layui-input" name="data[peisong][]"></td>';
+            html += '<td><input type="text" class="layui-input" name="data[qijia][]"></td>';
+            html += '<td><a class="jq_delete_sku delBtn" href="javascript:void(0);">删除</a></td>';
+            $(html).appendTo('#jq_taocan_body');
+        });
+    });
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        //时间选择器
+        laydate.render({
+            elem: '#test4'
+            , type: 'time'
+        });
+    });
+</script>
+{/block}

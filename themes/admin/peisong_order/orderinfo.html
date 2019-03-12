@@ -1,0 +1,163 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">订单统计</li>
+            <!--            <li class=""><a href="{:url('admin/add_order/add')}">添加订单</a></li>
+                        <li class=""><a href="{:url('admin/add_order/setting')}">设置配送金额</a></li>-->
+        </ul>
+        <div class="layui-tab-content">
+
+            <form class="layui-form layui-form-pane" action="{:url('admin/peisong_order/orderInfo')}" method="get">
+                <div class="layui-inline">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" value="{$name}" placeholder="请输入收获人姓名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">联系电话</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="mobile" value="{$mobile}" placeholder="请输入收获人电话" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn">搜索</button>
+                </div>
+            </form>
+            <hr>
+
+            <form action="" method="post" class="ajax-form">
+                <div class="layui-tab-item layui-show">
+                    <table class="layui-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 30px;">ID</th>
+                                <th>姓名</th>
+                                <th>联系电话</th>
+                                <th>当月订单数</th>
+                                <th>当月金额</th>
+                                <th>总订单数</th>
+                                <th>总金额</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 循环数据 --> 
+                            {foreach name="order_list" item="v"}
+                            <tr>
+                                <td>{$v.id}</td>
+                                <td>
+                                    <p>{$v.mname}</p>
+                                </td>
+                                <td>{$v.mobile}</td>
+                                <td>
+                                    <p>{$v.onlymonth}</p>
+                                </td>
+                                <td>
+                                    <p>{$v.onlymoney}</p>
+                                </td>
+                                <td>
+                                    <p>{$v.znum}</p>
+                                </td>
+                                <td>
+                                    <p>{$v.summoney}</p>
+                                </td>
+                            </tr>
+                            {/foreach}
+                            <!--  循环结束 -->
+                        </tbody>
+                    </table>
+                    <!--分页-->
+                    {$order_list->render()}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    // 发货
+    $(".ship").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+    // 取消发货
+    $(".cancel_delivery").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+    // 退款
+    $(".refund").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+    // 同意发货
+    $(".chang").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+// 修改为已完成订单
+    $(".carry").click(function () {
+        var url = $(this).attr("url");
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (res) {
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    setTimeout(function () {
+                        location.reload()
+                    }, 1500);
+                }
+            }
+        })
+    });
+</script>
+{/block}

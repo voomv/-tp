@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <title>{if condition="!empty($_SESSION['think']['site_config']['site_title'])"}{$_SESSION['think']['site_config']['site_title']}{else /}Open Source BMS{/if}</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <link rel="stylesheet" href="__JS__/layui/css/layui.css" media="all">
+        <link rel="stylesheet" href="__CSS__/font-awesome.min.css">
+        <!--CSS引用-->
+        {block name="css"}{/block}
+        <link rel="stylesheet" href="__CSS__/admin.css">
+        <!--[if lt IE 9]>
+        <script src="__CSS__/html5shiv.min.js"></script>
+        <script src="__CSS__/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    {block name="body"}
+    <div class="layui-body" style="left: 89px;">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox-content">
+                        <div class="row">
+                            <!--                            <div class="col-sm-10 col-sm-offset-1">-->
+                            <form action="<?=url('')?>" id="form-create" method="post" class="form-horizontal" role="form">
+
+                                <div class="layui-inline" style="margin-top:30px;">
+                                    <label class="layui-form-label">选择地区</label>
+                                    <div class="layui-input-inline layui-form-item">
+                                        <select class="layui-input layui-unselect" id="cmbProvince" name="cmbProvince" style="width: 150px;"></select>
+                                    </div>
+                                    <div class="layui-input-inline layui-form-item">
+                                        <select class="layui-input layui-unselect" id="cmbCity" name="cmbCity" style="width: 150px;"></select>
+                                    </div>
+                                    <div class="layui-input-inline layui-form-item">
+                                        <select class="layui-input layui-unselect" id="cmbArea" name="cmbArea" style="width: 150px;"></select>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">取货地址</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="address" name="address" value="" required lay-verify="required" placeholder="请输入取货地址" class="layui-input" style="width: 91%;">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">经纬度</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" id="lat" name="lat" value="" required lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;"> --
+                                        <input type="text" id="lng" name="lng" value="" required lay-verify="required" class="layui-input" style="width: 150px; display: inline-block;">
+                                        <button type="button" class="layui-btn dizhi" onclick="test()" style="margin:0;">搜索</button>
+                                        <!--<button type="button" mini="load" w="1000px" h="800px" href="/app/admin/add_order/callback/showLatLng.html?lat=0&amp;lng=0" class="layui-btn" style="margin:0;">选择地址</button>-->
+                                    </div>
+                                </div>
+                                <input type="hidden" name="type" value="{$type}" id="type">
+                                <div id="container"  tabindex="0" style="height: 600px;width: 90%;margin-left: 20px;"></div>
+
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button onclick="callback();" class="layui-btn" type="button" style=" margin-left: 80%;margin-top: 18px;">
+                                            确定选择
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {/block}
+    {block name="script"}
+
+    <script>
+        function callback() {
+            parent.mallSelect($("#lat").val(), $("#lng").val(), $("#address").val(), $("#type").val());
+        }
+    </script>
+
+    <script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.6&key=160cab8ad6c50752175d76e61ef92c50&plugin=AMap.ToolBar'></script>
+    <!-- UI组件库 1.0 -->
+    <script src="//webapi.amap.com/ui/1.0/main.js"></script>
+    <!--<script src="https://webapi.amap.com/maps?v=1.4.8&key=您申请的key值"></script>-->
+    <script src="/public/app/jsAddress.js"></script>
+    <script src="__JS__/jquery.min.js"></script>
+    <script src="__JS__/layui/lay/dest/layui.all.js"></script>
+    <!--<script src="__JS__/admin.js"></script>-->
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var selProvince = "河北省";
+            var selCity = "廊坊市";
+            var selArea = "";
+            addressInit('cmbProvince', 'cmbCity', 'cmbArea', selProvince, selCity, selArea);
+        });
+    </script>
+    <script type="text/javascript">
+        var map = new AMap.Map('container', {
+            center: [116.710121, 39.528053],
+            zoom: 11,
+            resizeEnable: true,
+        });
+
+        intGetAddress();
+        var markera;
+        function intGetAddress() {
+            AMap.plugin('AMap.Geolocation', function () {
+                var geolocation = new AMap.Geolocation({
+                    enableHighAccuracy: true, //是否使用高精度定位，默认:true
+                    timeout: 10000, //超过10秒后停止定位，默认：5s
+                    buttonPosition: 'RB', //定位按钮的停靠位置
+                    buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                    zoomToAccuracy: true, //定位成功后是否自动调整地图视野到定位点
+                });
+                map.addControl(geolocation);
+                geolocation.getCurrentPosition(function (status, result) {
+                    if (status == 'complete') {
+                        onComplete(result);
+                    } else {
+                        onError(result);
+                    }
+                });
+            });
+            //解析定位结果
+            function onComplete(data) {
+                $(" input[ name='lng' ] ").val(data.position.lng);
+                $(" input[ name='lat' ] ").val(data.position.lat);
+            }
+            //解析定位错误信息
+            function onError(data) {
+                alert('定位失败');
+            }
+        }
+
+        function test() {
+            var cmbProvince = $('#cmbProvince option:selected').val();
+            var cmbCity = $('#cmbCity option:selected').val();
+            var cmbArea = $('#cmbArea option:selected').val();
+            var address = $(" input[ name='address' ] ").val();
+            if (address) {
+                var index = address.lastIndexOf("\/");
+                address = address.substring(index + 1, address.length);
+            } else {
+                address = '';
+            }
+            var addr = cmbProvince + '/' + cmbCity + '/' + cmbArea + '/' + address;
+
+            $(" input[ name='address' ] ").val(addr);
+            $.post('/admin/add_order/getAddressParse', {adress: addr}, function (re) {
+
+                if (re) {
+                    lnglatXY = re.split(',');
+                    console.log(lnglatXY);
+                    $(" input[ name='lng' ] ").val(lnglatXY[0]);
+                    $(" input[ name='lat' ] ").val(lnglatXY[1]);
+                    var marker = new AMap.Marker({
+                        map: map,
+                        position: new AMap.LngLat(lnglatXY[0], lnglatXY[1]), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                        draggable: true,
+                        cursor: 'move',
+                    });
+                    if (markera) {
+                        map.remove(markera)
+                    }
+                    map.add(marker);
+                    markera = marker
+                    map.setFitView();
+                }
+                _initListener();
+            });
+        }
+
+        function _initListener() {
+            clickListener = AMap.event.addListener(markera, "mouseup", function (e) {
+                markera = e['lnglat']['lng'] + ',' + e['lnglat']['lat'];
+                $(" input[ name='lat' ] ").val(e['lnglat']['lat']);
+                $(" input[ name='lng' ] ").val(e['lnglat']['lng']);
+                $.post('https://restapi.amap.com/v3/geocode/regeo', {output: 'json', location: markera, key: '0e8dd43b72fc47794d2d6a5c5147b17e', extensions: 'base', batch: false, roadlevel: 1}, function (re) {
+                    if (re) {
+                        var list = re.regeocode.addressComponent;
+                        var cmbProvince = list.province;
+                        var cmbCity = list.city;
+                        var cmbArea = list.district;
+                        var address = list.streetNumber.street + '/' + list.streetNumber.direction + '/' + list.streetNumber.number;
+                        var addr = cmbProvince + '/' + cmbCity + '/' + cmbArea + '/' + address;
+                        $(" input[ name='address' ] ").val(addr);
+                    }
+                });
+            });
+
+        }
+
+    </script>
+    {/block}
